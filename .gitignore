@@ -1,0 +1,17 @@
+# .NET
+bin/
+obj/
+*.db
+*.db-shm
+*.db-wal
+uploads/
+appsettings.Secrets.json
+.vs/
+# Angular
+node_modules/
+dist/
+.angular/
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
