@@ -1,0 +1,61 @@
+### Переменные (VS Code REST Client / Rider)
+@host = http://localhost:5000
+@token = ВСТАВЬТЕ_ТОКЕН_ИЗ_ОТВЕТА_LOGIN
+
+### 1. Регистрация
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{ "username": "student1", "password": "Pass1234" }
+
+### 2. Вход (тестовый пользователь) -> скопируйте token в @token выше
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "test", "password": "Test123!" }
+
+### 3. Справочник марок
+GET {{host}}/api/brands
+
+### 4. Список (страницы, фильтры, сортировка)
+GET {{host}}/api/cars?page=1&pageSize=6&brandId=1&maxPrice=30000&yearFrom=2015&sort=price&dir=asc
+
+### 5. Одна запись
+GET {{host}}/api/cars/1
+
+### 6. Создание (нужен токен; без токена -> 401)
+POST {{host}}/api/cars
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{ "model": "Corolla", "year": 2018, "mileage": 70000, "price": 14000, "color": "Серый", "brandId": 1 }
+
+### 7. Особое правило -> 400: машина текущего года с пробегом > 50 000
+POST {{host}}/api/cars
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{ "model": "Corolla", "year": 2026, "mileage": 60000, "price": 14000, "color": "Серый", "brandId": 1 }
+
+### 8. Изменение (только автор; чужая запись -> 403)
+PUT {{host}}/api/cars/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{ "model": "Camry", "year": 2019, "mileage": 70000, "price": 18000, "color": "Белый", "brandId": 1 }
+
+### 9. Загрузка файла (только автор, до 5 МБ, jpg/png/webp)
+POST {{host}}/api/cars/1/image
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="car.jpg"
+Content-Type: image/jpeg
+
+< ./car.jpg
+--WebAppBoundary--
+
+### 10. Удаление (только автор; без токена -> 401, чужая -> 403)
+DELETE {{host}}/api/cars/6
+Authorization: Bearer {{token}}
